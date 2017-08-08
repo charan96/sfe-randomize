@@ -2,10 +2,10 @@
 #define PRINT_H
 
 template <typename T>
-void print_vector(vector<T> vec)
+void print_vector(std::vector<T> vec)
 {
 	for (int i=0; i<vec.size(); i++)
-		cout << vec.at(i) << endl;
+		std::cout << vec.at(i) << std::endl;
 }
 
 

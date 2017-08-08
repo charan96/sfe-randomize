@@ -6,8 +6,8 @@ void print_dataframe(dataframe df)
 {
 	for (int i=0; i<df.size(); i++)
 	{
-		vector<double> feats = df[i].second;
-		cout << df[i].first;
+		std::vector<double> feats = df[i].second;
+		std::cout << df[i].first;
 		
 		for (int j=0; j<df[i].second.size(); j++)
 			printf(",%0.15f", df[i].second.at(j));
