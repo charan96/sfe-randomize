@@ -6,8 +6,7 @@
 int main()
 {
 	dataframe data = get_data_set();
-	std::string infile = "shuttle.preproc.csv";
-	doubleframe *df = build_doubleframe(infile.c_str());
+	doubleframe *df = build_doubleframe(input_datafile.c_str());
 	// print_dataframe(data);
 
 	std::vector<double> query = {0.961074390045098,-0.0125779430326821,2.65657571737471,

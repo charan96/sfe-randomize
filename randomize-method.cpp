@@ -7,7 +7,6 @@
 dataframe get_data_set()
 {
 	dataframe data(NUM_DATAPOINTS, make_pair("no_truth", std::vector<double>(NUM_FEATS)));
-	std::string input_datafile = "shuttle.preproc.csv";
 	std::ifstream infile(input_datafile.c_str());
 	std::string line, firstline;
 	int ctr = 0;
