@@ -9,6 +9,7 @@
 #include <string>
 #include <bits/stdc++.h>
 #include <random>
+#include <map>
 
 // using namespace std;
 
@@ -16,6 +17,9 @@ typedef std::vector<std::pair<std::string, std::vector<double> > > dataframe;
 typedef std::vector<std::pair<int, float> > ftplen;
 const int NUM_DATAPOINTS = 58000;
 const int NUM_FEATS = 9;
-const std::string input_datafile = "shuttle.preproc.csv";
+const int NUM_REPS = 5;
+const std::string INFILE = "shuttle.preproc.csv";
+const std::string QUERYFILE = "queries.shuttle.csv";
+const std::string OUTFILE = "output.out";
 
 #endif

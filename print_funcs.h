@@ -9,6 +9,16 @@ void print_vector(std::vector<T> vec)
 }
 
 
+template <typename T1, typename T2>
+void print_map(std::map<T1, T2> mymap)
+{
+	std::cout << "key\t" << "value" << std::endl;
+
+	for (int i=0; i<mymap.size(); i++)
+		std::cout<< i << "\t" << mymap[i] << std::endl;
+}
+
+
 void print_dataframe(dataframe df);
 void print_vector_pair(ftplen vec);
 

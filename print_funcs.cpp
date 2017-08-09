@@ -25,3 +25,4 @@ void print_vector_pair(ftplen vec)
 		printf("%d\t%d\t%f\n", i, vec.at(i).first, vec.at(i).second);
 }
 
+

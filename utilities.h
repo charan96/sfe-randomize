@@ -13,6 +13,10 @@ doubleframe* build_doubleframe(std::string input_name);
 IsolationForest build_Isolation_forest(doubleframe* df);
 double* vector_to_dub_ptr(std::vector<double> vec);
 float max_float(float a, float b);
-int dataframe_size(dataframe df);
+ftplen map_to_vector_pair(std::map<int, float> mymap);
+std::vector<int> get_keys(std::map<int, float> mymap);
+int get_lines_in_file(std::string filename);
+// std::vector<double> get_vector_from_vector_pair(ftplen vec_pair);
+// std::vector<double> add_vectors(std::vector<double> a, std::vector<double> b);
 
 #endif

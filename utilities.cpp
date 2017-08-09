@@ -19,10 +19,22 @@ std::vector<double> str_to_double_vector(std::vector<std::string> vec)
 }
 
 
-int dataframe_size(dataframe df)
+/* int dataframe_size(dataframe df)
 {
-	return 58000;
-	//return NUM_DATAPOINTS;
+	return NUM_DATAPOINTS;
+} */
+
+
+int get_lines_in_file(std::string filename)
+{
+	std::ifstream infile(filename.c_str());
+	std::string line;
+	int ctr = 0;
+
+	while(std::getline(infile, line))
+		ctr++;
+
+	return ctr;
 }
 
 
@@ -50,9 +62,10 @@ std::vector<std::string> split(std::string str, char delim)
 }
 
 
+// sort descending
 bool sort_by_second(const std::pair<int, float> &a, const std::pair<int, float> &b)
 {
-	return (a.second < b.second);
+	return (a.second > b.second);
 }
 
 
@@ -86,6 +99,28 @@ float max_float(float a, float b)
 }
 
 
+ftplen map_to_vector_pair(std::map<int, float> mymap)
+{
+	ftplen vec;
+
+	for (int i=0; i<mymap.size(); i++)
+		vec.push_back(std::make_pair(i, mymap[i]));
+
+	return vec;
+}
+
+
+std::vector<int> get_keys(std::map<int, float> mymap)
+{
+	std::vector<int> vec;
+
+	for (std::map<int, float>::iterator it = mymap.begin(); it != mymap.end(); ++it)
+		vec.push_back(it->first);
+
+	return vec;
+}
+
+
 /************************************************/
 /************** UNDER CONSTRUCTION **************/
 /************************************************/
@@ -101,7 +136,7 @@ doubleframe* build_doubleframe(std::string input_name)
 IsolationForest build_Isolation_forest(doubleframe* df)
 {
 	// IsolationForest iff(ntree,dt,nsample,maxheight,stopheight,rsample);
-	IsolationForest iff(100, df, 2048, 0, false, true);
+	IsolationForest iff(100, df, 512, 0, false, true);
 	return iff;
 }
 
