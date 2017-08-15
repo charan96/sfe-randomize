@@ -2,3 +2,4 @@ exec_obj
 .nfs*
 iforest/*
 *.o
+data/*
