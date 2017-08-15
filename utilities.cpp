@@ -19,12 +19,6 @@ std::vector<double> str_to_double_vector(std::vector<std::string> vec)
 }
 
 
-/* int dataframe_size(dataframe df)
-{
-	return NUM_DATAPOINTS;
-} */
-
-
 int get_lines_in_file(std::string filename)
 {
 	std::ifstream infile(filename.c_str());
@@ -61,10 +55,10 @@ std::vector<std::string> split(std::string str, char delim)
 	return vec;
 }
 
-
-// sort descending
+/* sort descending */
 bool sort_by_second(const std::pair<int, float> &a, const std::pair<int, float> &b)
 {
+	// return (a.second < b.second);	/* for ascending sort */
 	return (a.second > b.second);
 }
 
@@ -121,9 +115,6 @@ std::vector<int> get_keys(std::map<int, float> mymap)
 }
 
 
-/************************************************/
-/************** UNDER CONSTRUCTION **************/
-/************************************************/
 doubleframe* build_doubleframe(std::string input_name)
 {
 	ntstringframe* csv = read_csv((char *)input_name.c_str(), true, false, false);
@@ -136,7 +127,7 @@ doubleframe* build_doubleframe(std::string input_name)
 IsolationForest build_Isolation_forest(doubleframe* df)
 {
 	// IsolationForest iff(ntree,dt,nsample,maxheight,stopheight,rsample);
-	IsolationForest iff(100, df, 512, 0, false, true);
+	IsolationForest iff(100, df, 1024, 0, false, true);
 	return iff;
 }
 
@@ -145,6 +136,18 @@ double* vector_to_dub_ptr(std::vector<double> vec)
 {
 	double *ptr_vec = vec.data();
 	return ptr_vec;
+}
+
+
+std::vector<int> ordered_feats(ftplen vec)
+{
+	vec = sort_vector_pair(vec);
+	std::vector<int> ord_feats;
+
+	for (int i=0; i<vec.size(); i++)
+		ord_feats.push_back(vec.at(i).first);
+
+	return ord_feats;
 }
 
 

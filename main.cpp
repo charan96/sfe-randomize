@@ -7,7 +7,7 @@ int main()
 {
 	dataframe data = get_data_set();
 	doubleframe *df = build_doubleframe(INFILE.c_str());
-	// print_dataframe(data);
+	print_dataframe(data);
 
 	std::vector<double> query = {0.961074390045098,-0.0125779430326821,2.65657571737471,
 				-0.0344912414815925,1.17497576719637,-0.00739065642095547,

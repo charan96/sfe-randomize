@@ -36,24 +36,12 @@ std::vector<double> switch_feature(int feat_num, dataframe data, std::vector<dou
 }
 
 
-std::vector<int> ordered_feats(ftplen vec)
-{
-	vec = sort_vector_pair(vec);
-	std::vector<int> ord_feats;
-
-	for (int i=0; i<vec.size(); i++)
-		ord_feats.push_back(vec.at(i).first);
-
-	return ord_feats;
-}
-
-
 std::map<int, float> build_feature_pathlen(std::vector<double> query, dataframe data, doubleframe *df)
 {	
 	 IsolationForest iff = build_Isolation_forest(df);
 
 	 float base_pathlen = get_path_length(query, iff);
-	 std::cout << "base len: " << base_pathlen << std::endl;
+	 // std::cout << "base len: " << base_pathlen << std::endl;
 	 std::map<int, float> query_feat_lens;
 	
 	 for (int i=0; i<query.size(); i++)
@@ -103,10 +91,9 @@ void build_explanation_file(std::map<int, float> mymap)
 
 	// header
 	outfile << "id, ";
-
+	
 	for (int i=0; i<ord_feats.size() - 1; i++)
 		outfile << "rank" << i << ", ";
-
 	outfile << "rank" << ord_feats.size() << std::endl;
 
 	// temp var id
@@ -123,3 +110,25 @@ void build_explanation_file(std::map<int, float> mymap)
 	outfile.close();
 	return;
 }
+
+/*
+void build_explanation_file(dataframe data)
+{
+	std::ofstream outfile(OUTFILE.c_str());
+
+	// header
+	outfile << "id, ";
+
+	for (int i=0; i<ord_feats.size() - 1; i++)
+		outfile << "rank" << i << ", ";
+	outfile << "rank" << ord_feats.size() << std::endl;
+
+
+	for (int id=0; id<data.size(); id++)
+	{
+		if ((data.at(i).first).compare("anomaly") == 0)
+		{
+			build_avg_feat_lens(query, data, df)
+
+	return;
+} */

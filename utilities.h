@@ -3,20 +3,28 @@
 
 #include "iforest/IsolationForest.hpp"
 
-std::vector<double> str_to_double_vector(std::vector<std::string> vec);
-int randint(int start, int end);
-std::vector<std::string> split(std::string str, char delim);
-bool sort_by_second(const std::pair<int, float> &a, const std::pair<int, float> &b);
-ftplen sort_vector_pair(ftplen vec);
-float get_path_length(std::vector<double> inst, IsolationForest &iff);
-doubleframe* build_doubleframe(std::string input_name);
-IsolationForest build_Isolation_forest(doubleframe* df);
-double* vector_to_dub_ptr(std::vector<double> vec);
-float max_float(float a, float b);
-ftplen map_to_vector_pair(std::map<int, float> mymap);
-std::vector<int> get_keys(std::map<int, float> mymap);
-int get_lines_in_file(std::string filename);
-// std::vector<double> get_vector_from_vector_pair(ftplen vec_pair);
-// std::vector<double> add_vectors(std::vector<double> a, std::vector<double> b);
+std::vector<double> str_to_double_vector(std::vector<std::string> vec);		/* convert string vector to double vector */
+int randint(int start, int end);						/* random integer in range; inclusive */
+
+std::vector<std::string> split(std::string str, char delim);			/* split string based on delimiter */
+bool sort_by_second(const std::pair<int, float> &a, const std::pair<int, float> &b);	/* helper function to sort_vector_pair */
+
+ftplen sort_vector_pair(ftplen vec);						/* sort vector of pairs (ftplen) based on second value in pair; asc/desc sorting based on sort_by_second function */
+float get_path_length(std::vector<double> inst, IsolationForest &iff);		/* path length in the isolation forest for the passed in instance/datapoint */
+
+doubleframe* build_doubleframe(std::string input_name);				/* build doubleframe (from iforest code) from the passed in file name */
+IsolationForest build_Isolation_forest(doubleframe* df);			/* build the isolation forest object from the doubleframe ptr */
+
+double* vector_to_dub_ptr(std::vector<double> vec);				/* convert double vector to double array using ptr */
+std::vector<int> ordered_feats(ftplen vec);					/* sort the ftplen object and sort it using sort_vector_pair and return only the feature names */
+
+float max_float(float a, float b);						/* max of two floats */
+ftplen map_to_vector_pair(std::map<int, float> mymap);				/* convert */
+
+std::vector<int> get_keys(std::map<int, float> mymap);				/* */
+int get_lines_in_file(std::string filename);					/* number of lines in a given file passed in as file name */
+
+float vector_avg(std::vector<double> vec);					/* get the average of the double vector */
+
 
 #endif
