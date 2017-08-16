@@ -10,19 +10,10 @@ int main()
 	doubleframe *df = build_doubleframe(INFILE.c_str());
 	// print_dataframe(ndata);
 	
-	std::cout<< get_num_cols_in_file(INFILE) << std::endl;
-	dataframe qdata = get_data_set(QUERYFILE);
-
-	for (int i=0; i<qdata.size(); i++)
-	{
-		std::vector<double> qpoint = qdata.at(i).second;
-		std::map<int, float> mymap = build_avg_feat_lens(qpoint, ndata, df);
-
-		print_map(mymap);
-
-		if (i==3)
-			break;
-	}
+	// std::cout<< get_num_cols_in_file(INFILE) << std::endl;
+	std::vector<std::vector<int> > ranked_feats = get_ranked_features(QUERYFILE, ndata, df);
+	print_explanations(ranked_feats);
+	build_dropout_expl_file(ranked_feats);
 
 	/*
 	std::vector<double> query = {0.961074390045098,-0.0125779430326821,2.65657571737471,

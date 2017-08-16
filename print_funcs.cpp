@@ -8,7 +8,7 @@ void print_dataframe(dataframe df)
 	{
 		std::vector<double> feats = df[i].second;
 		std::cout << df[i].first;
-		
+
 		for (int j=0; j<df[i].second.size(); j++)
 			printf(",%0.15f", df[i].second.at(j));
 
@@ -26,15 +26,24 @@ void print_vector_pair(ftplen vec)
 }
 
 
-/* void print_explanations(std::vector<std::map<int, float> > mymap)
+void print_explanations(std::vector<std::vector<int> > ranked_feats)
 {
-	ftplen myvec = map_to_vector_pair(mymap);
-	std::vector<int> ord_feats = ordered_feats(myvec);
-
 	std::cout << "id, ";
 
-	for (int i=0; i<ord_feats.size() - 1; i++)
+	for (int i=0; i<ranked_feats.at(0).size() - 1; i++)
 		std::cout << "rank" << i << ", ";
-	std::cout << "rank" << ord_feats.size() << std::endl;
+	std::cout << "rank" << ranked_feats.at(0).size() - 1 << std::endl;
+
+	for (int id=0; id<ranked_feats.size(); id++)
+	{
+		std::cout << id << ", ";
+
+		for (int i=0; i<ranked_feats.at(id).size() - 1; i++)
+			std::cout << ranked_feats.at(id).at(i) << ", ";
+
+		std::cout << ranked_feats.at(id).at(ranked_feats.at(id).size() - 1) << std::endl;
+	}
+
+	return;
 }
-*/
+

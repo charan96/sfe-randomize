@@ -29,7 +29,7 @@ dataframe get_data_set(std::string input_file)
 
 std::vector<double> switch_feature(int feat_num, dataframe data, std::vector<double> query)
 {
-	int rand_dataidx = randint(0, get_lines_in_file(INFILE) - 1);
+	int rand_dataidx = randint(0, get_lines_in_file(INFILE) - 2);
 	query.at(feat_num) = data.at(rand_dataidx).second.at(feat_num);
 	
 	return query;
@@ -71,35 +71,52 @@ std::map<int, float> build_avg_feat_lens(std::vector<double> query, dataframe da
 }
 
 
-//std::vector<std::vector<int> > ranked_features()
-//{
-//}
-void build_explanation_file(std::map<int, float> mymap)
+std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe nominal_df, doubleframe *df)
+{
+	dataframe qdata = get_data_set(qfile);
+	std::vector<std::vector<int> > feats;
+
+	for (int i=0; i<qdata.size(); i++)
+	{
+		std::vector<double> qpoint = qdata.at(i).second;
+		std::map<int, float> qpoint_avg_lens_map = build_avg_feat_lens(qpoint, nominal_df, df);
+
+		ftplen myvec = map_to_vector_pair(qpoint_avg_lens_map);
+		std::vector<int> ord_feats = ordered_feats(myvec);
+		
+		feats.push_back(ord_feats);
+
+		if (i==10)
+			break;
+	}
+
+	return feats;
+}
+
+
+void build_dropout_expl_file(std::vector<std::vector<int> > ranked_feats)
 {
 	std::ofstream outfile(OUTFILE.c_str());
-
-	ftplen myvec = map_to_vector_pair(mymap);
-	std::vector<int> ord_feats = ordered_feats(myvec);
 
 	// header
 	outfile << "id, ";
 	
-	for (int i=0; i<ord_feats.size() - 1; i++)
+	for (int i=0; i<ranked_feats.at(0).size() - 1; i++)
 		outfile << "rank" << i << ", ";
-	outfile << "rank" << ord_feats.size() << std::endl;
+	outfile << "rank" << ranked_feats.at(0).size() - 1 << std::endl;
 
-	// temp var id
-	int id = 0;
+	for (int id=0; id<ranked_feats.size(); id++)
+	{
+		outfile << id << ", ";
 
-	// add for loop for going through queries
-	outfile << id << ", ";
+		for (int i=0; i<ranked_feats.at(id).size() - 1; i++)
+			outfile << ranked_feats.at(id).at(i) << ", ";
 
-	for (int i=0; i<ord_feats.size() - 1; i++)
-		outfile << ord_feats.at(i) << ", ";
-
-	outfile << ord_feats.at(ord_feats.size() - 1) << std::endl;
+		outfile << ranked_feats.at(id).at(ranked_feats.at(id).size() - 1) << std::endl;
+	}
 
 	outfile.close();
+
 	return;
 }
 
