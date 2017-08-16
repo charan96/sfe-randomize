@@ -7,11 +7,11 @@
 
 std::vector<double> str_to_double_vector(std::vector<std::string> vec)
 {
-	std::vector<double> dub_vector(vec.size() - 1);
-
-	for (int i=1;i<vec.size();i++)
+	std::vector<double> dub_vector(vec.size() - COL_START);
+	
+	for (int i=COL_START;i<vec.size();i++)
 	{
-		dub_vector[i - 1] = std::stod(vec.at(i));
+		dub_vector[i - COL_START] = std::stod(vec.at(i));
 		// printf("%0.15f\n", dub_std::vector[i]);
 	}
 
@@ -157,5 +157,17 @@ float get_path_length(std::vector<double> inst, IsolationForest &iff)
 	std::vector<double> plens = iff.pathLength(query);
 	
 	return vector_avg(plens);
+}
+
+
+int get_num_cols_in_file(std::string filename)
+{
+	std::ifstream file(filename.c_str());
+	std::string line;
+
+	if(std::getline(file, line))
+		file.close();
+
+	return split(line, ',').size();
 }
 

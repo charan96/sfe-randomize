@@ -26,3 +26,15 @@ void print_vector_pair(ftplen vec)
 }
 
 
+/* void print_explanations(std::vector<std::map<int, float> > mymap)
+{
+	ftplen myvec = map_to_vector_pair(mymap);
+	std::vector<int> ord_feats = ordered_feats(myvec);
+
+	std::cout << "id, ";
+
+	for (int i=0; i<ord_feats.size() - 1; i++)
+		std::cout << "rank" << i << ", ";
+	std::cout << "rank" << ord_feats.size() << std::endl;
+}
+*/

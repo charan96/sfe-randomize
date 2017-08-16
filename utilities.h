@@ -25,6 +25,6 @@ std::vector<int> get_keys(std::map<int, float> mymap);				/* */
 int get_lines_in_file(std::string filename);					/* number of lines in a given file passed in as file name */
 
 float vector_avg(std::vector<double> vec);					/* get the average of the double vector */
-
+int get_num_cols_in_file(std::string filename);
 
 #endif

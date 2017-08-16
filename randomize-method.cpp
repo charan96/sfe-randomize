@@ -4,10 +4,10 @@
 #include "randomize-method.h"
 
 
-dataframe get_data_set()
+dataframe get_data_set(std::string input_file)
 {
-	dataframe data(get_lines_in_file(INFILE) - 1, make_pair("no_truth", std::vector<double>(NUM_FEATS)));
-	std::ifstream infile(INFILE.c_str());
+	dataframe data(get_lines_in_file(input_file) - 1, make_pair("no_truth", std::vector<double>(get_num_cols_in_file(INFILE) - 2)));
+	std::ifstream infile(input_file.c_str());
 	std::string line, firstline;
 	int ctr = 0;
 
@@ -36,52 +36,44 @@ std::vector<double> switch_feature(int feat_num, dataframe data, std::vector<dou
 }
 
 
-std::map<int, float> build_feature_pathlen(std::vector<double> query, dataframe data, doubleframe *df)
-{	
-	 IsolationForest iff = build_Isolation_forest(df);
-
-	 float base_pathlen = get_path_length(query, iff);
-	 // std::cout << "base len: " << base_pathlen << std::endl;
-	 std::map<int, float> query_feat_lens;
-	
-	 for (int i=0; i<query.size(); i++)
-	 {
-	 	std::vector<double> updated_query = switch_feature(i, data, query);
-
-		float updated_pathlen = max_float(float(0), base_pathlen - get_path_length(updated_query, iff));
-		// float updated_pathlen = base_pathlen - get_path_length(updated_query, iff);
-		query_feat_lens[i] = updated_pathlen;
-	 }
-	
-	return query_feat_lens;
-}
-
-
 std::map<int, float> build_avg_feat_lens(std::vector<double> query, dataframe data, doubleframe *df)
 {
-	std::map<int, float> avg_feat_lens;
+	std::map<int, float> avg_switched_feature_query_lengths;
+	IsolationForest iff = build_Isolation_forest(df);
+	float base_pathlen = get_path_length(query, iff);
 
+	// initialize to 0
 	for (int i=0; i<query.size(); i++)
-		avg_feat_lens[i] = float(0);
+		avg_switched_feature_query_lengths[i] = float(0);
 
 	for (int i=0; i<NUM_REPS; i++)
 	{
-		// if (avg_feat_lens.count(i) == 1)
-		//	avg_feat_lens[i] = 0;
+		// if (avg_switched_feature_query_lengths.count(i) == 1)
+		//	avg_switched_feature_query_lengths[i] = 0;
 
-		std::map<int, float> query_feat_lens = build_feature_pathlen(query, data, df);
+		std::map<int, float> switched_feature_query_lengths;
+		for (int k=0; k<query.size(); k++)
+		{
+			std::vector<double> updated_query = switch_feature(k, data, query);
+
+			float updated_pathlen = max_float(float(-5000), base_pathlen - get_path_length(updated_query, iff));
+			switched_feature_query_lengths[k] = updated_pathlen;
+		}
 		
 		for (int j=0; j<query.size(); j++)
-			avg_feat_lens[j] += query_feat_lens[j];
+			avg_switched_feature_query_lengths[j] += switched_feature_query_lengths[j];
 	}
 
 	for (int i=0; i<query.size(); i++)
-		avg_feat_lens[i] /= NUM_REPS;
+		avg_switched_feature_query_lengths[i] /= NUM_REPS;
 
-	return avg_feat_lens;
+	return avg_switched_feature_query_lengths;
 }
 
 
+//std::vector<std::vector<int> > ranked_features()
+//{
+//}
 void build_explanation_file(std::map<int, float> mymap)
 {
 	std::ofstream outfile(OUTFILE.c_str());
