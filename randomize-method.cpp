@@ -86,8 +86,8 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 		
 		feats.push_back(ord_feats);
 
-		if (i==10)
-			break;
+		// if (i==10)
+		// 	break;
 	}
 
 	return feats;
@@ -101,9 +101,9 @@ void build_dropout_expl_file(std::vector<std::vector<int> > ranked_feats)
 	// header
 	outfile << "id, ";
 	
-	for (int i=0; i<ranked_feats.at(0).size() - 1; i++)
+	for (int i=1; i<ranked_feats.at(0).size(); i++)
 		outfile << "rank" << i << ", ";
-	outfile << "rank" << ranked_feats.at(0).size() - 1 << std::endl;
+	outfile << "rank" << ranked_feats.at(0).size() << std::endl;
 
 	for (int id=0; id<ranked_feats.size(); id++)
 	{
@@ -116,28 +116,7 @@ void build_dropout_expl_file(std::vector<std::vector<int> > ranked_feats)
 	}
 
 	outfile.close();
-
+	std::cout << "finished writing to file" << std::out;
 	return;
 }
 
-/*
-void build_explanation_file(dataframe data)
-{
-	std::ofstream outfile(OUTFILE.c_str());
-
-	// header
-	outfile << "id, ";
-
-	for (int i=0; i<ord_feats.size() - 1; i++)
-		outfile << "rank" << i << ", ";
-	outfile << "rank" << ord_feats.size() << std::endl;
-
-
-	for (int id=0; id<data.size(); id++)
-	{
-		if ((data.at(i).first).compare("anomaly") == 0)
-		{
-			build_avg_feat_lens(query, data, df)
-
-	return;
-} */

@@ -19,6 +19,6 @@ const int COL_START = 2;	// features starting from 3rd column in dataset (starti
 const int NUM_REPS = 30;		// change to 30 after testing
 const std::string INFILE = "data/nominal-bench.csv";
 const std::string QUERYFILE = "data/anomaly-bench.csv";
-const std::string OUTFILE = "output.out";
+const std::string OUTFILE = "bench100_ranked_explanations.csv";
 
 #endif
