@@ -56,7 +56,7 @@ std::map<int, float> build_avg_feat_lens(std::vector<double> query, dataframe da
 		{
 			std::vector<double> updated_query = switch_feature(k, data, query);
 
-			float updated_pathlen = max_float(float(-5000), base_pathlen - get_path_length(updated_query, iff));
+			float updated_pathlen = max_float(float(0), base_pathlen - get_path_length(updated_query, iff));
 			switched_feature_query_lengths[k] = updated_pathlen;
 		}
 		
@@ -94,6 +94,7 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 }
 
 
+/* write the ranked features to the file */
 void build_dropout_expl_file(std::vector<std::vector<int> > ranked_feats)
 {
 	std::ofstream outfile(OUTFILE.c_str());
@@ -107,16 +108,19 @@ void build_dropout_expl_file(std::vector<std::vector<int> > ranked_feats)
 
 	for (int id=0; id<ranked_feats.size(); id++)
 	{
-		outfile << id << ", ";
+		outfile << id+1 << ", ";
 
 		for (int i=0; i<ranked_feats.at(id).size() - 1; i++)
 			outfile << ranked_feats.at(id).at(i) << ", ";
 
 		outfile << ranked_feats.at(id).at(ranked_feats.at(id).size() - 1) << std::endl;
+
+		if (id%10 == 0)
+			std::cout << id << "/" << ranked_feats.size() << std::endl;
 	}
 
 	outfile.close();
-	std::cout << "finished writing to file" << std::out;
+	std::cout << "finished writing to file" << std::endl;
 	return;
 }
 

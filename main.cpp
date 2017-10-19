@@ -12,7 +12,7 @@ int main()
 	
 	// std::cout<< get_num_cols_in_file(INFILE) << std::endl;
 	std::vector<std::vector<int> > ranked_feats = get_ranked_features(QUERYFILE, ndata, df);
-	print_explanations(ranked_feats);
+	// print_explanations(ranked_feats);
 	build_dropout_expl_file(ranked_feats);
 
 	/*
