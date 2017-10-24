@@ -73,16 +73,19 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 	std::vector<std::vector<int> > feats;
 	
 	IsolationForest iff = build_Isolation_forest(df);
-	std::vector<std::pair<int, int> > refidx;
+	std::vector<std::string> refidx;
 	int anomaly_ctr = 1;
+
+	// std::ofstream ref_file(REF_FILE.c_str());
+	// ref_file << "idx,anoIdx,ano_score" << std::endl;
 
 	for (int i=0; i<qdata.size(); i++)
 	{
 		std::vector<double> qpoint = qdata.at(i).second;
 
-		if (iff.instanceScore(vector_to_dub_ptr(qpoint)) < 0.3)		// assuming lower score means anomaly
+		if (iff.instanceScore(vector_to_dub_ptr(qpoint)) > 0.4)		// assuming lower score means anomaly
 		{
-			refidx.push_back(std::make_pair(anomaly_ctr, i + 1));
+			refidx.push_back(std::to_string(anomaly_ctr) + "," + std::to_string(i + 1) + "," + std::to_string(iff.instanceScore(vector_to_dub_ptr(qpoint))));
 			anomaly_ctr++;
 		}
 		
@@ -93,7 +96,7 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 
 		feats.push_back(ord_feats);
 		
-		printf("%d\/%d, %f\n", i+1, qdata.size(), iff.instanceScore(vector_to_dub_ptr(qpoint)));		// status printout
+		printf("%d\/%d, %f\n", i + 1, qdata.size(), iff.instanceScore(vector_to_dub_ptr(qpoint)));		// status printout
 	}
 
 	write_refidx_file(refidx);
@@ -102,15 +105,15 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 }
 
 
-void write_refidx_file(std::vector<std::pair<int, int> > refidx)
+void write_refidx_file(std::vector<std::string> refidx)
 {
 	std::ofstream ref_file(REF_FILE.c_str());
 
-	ref_file << "idx,anoIdx" << std::endl;		// anoIdx starts at 6; for example, anoIdx=6 is the 6th datapoint
+	ref_file << "idx,anoIdx,anoScore" << std::endl;		// anoIdx starts at 6; for example, anoIdx=6 is the 6th datapoint
 
 	for (int i=0; i<refidx.size(); i++)
-		ref_file << refidx[i].first << "," << refidx[i].second << std::endl;
-
+		ref_file << refidx[i] << std::endl;
+	
 	ref_file.close();
 
 	return;

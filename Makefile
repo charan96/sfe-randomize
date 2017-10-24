@@ -41,3 +41,7 @@ fresh:
 
 run:
 	./exec_obj
+
+add:
+	cp bench100_all_ranked_explanations30.csv ../build-MFP/shuttle/explanations/exp_shuttle_100_seq_dropout.csv
+	cd ../build-MFP
