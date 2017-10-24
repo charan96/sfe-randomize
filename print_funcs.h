@@ -1,6 +1,8 @@
 #ifndef PRINT_H
 #define PRINT_H
 
+#include "iforest/IsolationForest.hpp"
+
 template <typename T>
 void print_vector(std::vector<T> vec)
 {
@@ -22,5 +24,6 @@ void print_map(std::map<T1, T2> mymap)
 void print_dataframe(dataframe df);
 void print_vector_pair(ftplen vec);
 void print_explanations(std::vector<std::vector<int> > ranked_feats);
+void print_doubleframe(doubleframe *df);
 
 #endif

@@ -12,7 +12,7 @@ bool sort_by_second(const std::pair<int, float> &a, const std::pair<int, float> 
 ftplen sort_vector_pair(ftplen vec);						/* sort vector of pairs (ftplen) based on second value in pair; asc/desc sorting based on sort_by_second function */
 float get_path_length(std::vector<double> inst, IsolationForest &iff);		/* path length in the isolation forest for the passed in instance/datapoint */
 
-doubleframe* build_doubleframe(std::string input_name);				/* build doubleframe (from iforest code) from the passed in file name */
+doubleframe* build_doubleframe(std::string input_name, int metacols);				/* build doubleframe (from iforest code) from the passed in file name  and skip metacols*/
 IsolationForest build_Isolation_forest(doubleframe* df);			/* build the isolation forest object from the doubleframe ptr */
 
 double* vector_to_dub_ptr(std::vector<double> vec);				/* convert double vector to double array using ptr */

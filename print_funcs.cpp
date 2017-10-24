@@ -47,3 +47,19 @@ void print_explanations(std::vector<std::vector<int> > ranked_feats)
 	return;
 }
 
+
+void print_doubleframe(doubleframe *df)
+{
+	for (int row=0; row<df->nrow; row++)
+	{
+		printf("%d: ", row);
+
+		for (int col=0; col<df->ncol; col++)
+			printf("%f, ", df->data[row][col]);
+		
+		printf("\n");
+	}
+
+	return;
+}
+

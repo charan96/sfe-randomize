@@ -3,3 +3,4 @@ exec_obj
 iforest/*
 *.o
 *.swp
+build-scripts/*
