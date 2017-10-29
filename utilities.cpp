@@ -98,8 +98,10 @@ ftplen map_to_vector_pair(std::map<int, float> mymap)
 {
 	ftplen vec;
 
-	for (int i=0; i<mymap.size(); i++)
-		vec.push_back(std::make_pair(i, mymap[i]));
+	//for (int i=0; i<mymap.size(); i++)
+	//	vec.push_back(std::make_pair(i, mymap[i]));
+	for (auto const& x: mymap)
+		vec.push_back(std::make_pair(x.first, x.second));
 
 	return vec;
 }
@@ -115,34 +117,14 @@ std::vector<int> get_keys(std::map<int, float> mymap)
 	return vec;
 }
 
-/* FIXME: fix double frame to ignore 1st col */
+
 doubleframe* build_doubleframe(std::string input_name, int metacols)
 {
-	// d(int) *skip_cols = new int[1];
-	// skip_cols[0] = metacols;
-
 	ntstringframe* csv = read_csv((char *)input_name.c_str(), true, false, false);
-	// ntstringframe *metadata = split_frame(ntstring, csv, skip_cols, true);
 	doubleframe* dt = conv_frame(double, ntstring, csv);
 
-	/* for (int k=0; k<dt->ncol; k++)
-		std::cout << dt->data[0][k] << std::endl;
-	printf("\n");
-	*/
 	for (int inst=0; inst<dt->nrow; inst++)
-	{
-		/* std::vector<double> new_inst;
-		for (int i=0; i<dt->ncol; i++)
-		{
-			if (i == metacols)
-				continue;
-			new_inst.push_back(dt->data[inst][i]);
-		}
-
-		dt->data[inst] = vector_to_dub_ptr(new_inst);*/
-
 		dt->data[inst] = &dt->data[inst][metacols + 2];  //FIXME: works for only removing first col
-	}		
 
 	dt->ncol-=2;
 

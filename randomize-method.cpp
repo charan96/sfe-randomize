@@ -2,6 +2,7 @@
 #include "print_funcs.h"
 #include "utilities.h"
 #include "randomize-method.h"
+#include <algorithm>
 
 
 dataframe get_data_set(std::string input_file)
@@ -36,34 +37,59 @@ std::vector<double> switch_feature(int feat_num, dataframe data, std::vector<dou
 }
 
 
-std::map<int, float> build_avg_feat_lens(std::vector<double> query, dataframe data, doubleframe *df, IsolationForest *iff)
+std::vector<int> build_avg_feat_lens(std::vector<double> query, dataframe data, doubleframe *df, IsolationForest *iff)
 {
-	std::map<int, float> avg_switched_feature_query_lengths;
+	std::map<int, float> hello;
 	float base_pathlen = get_path_length(query, *iff);
+	std::vector<int> omitted_feats;
 
-	// initialize to 0
-	for (int i=0; i<query.size(); i++)
-		avg_switched_feature_query_lengths[i] = float(0);
 
-	for (int i=0; i<NUM_REPS; i++)
+	while (omitted_feats.size() < query.size())
 	{
-		std::map<int, float> switched_feature_query_lengths;
-		for (int k=0; k<query.size(); k++)
+		std::map<int, float> avg_switched_feature_query_lengths;
+		// initialize to 0
+		for (int i=0; i<query.size(); i++)
 		{
-			std::vector<double> updated_query = switch_feature(k, data, query);
-
-			float updated_pathlen = max_float(float(0), base_pathlen - get_path_length(updated_query, *iff));
-			switched_feature_query_lengths[k] = updated_pathlen;
+			// if (!omitted_feats.contains(i))
+			if (std::find(omitted_feats.begin(), omitted_feats.end(), i) == omitted_feats.end())
+				avg_switched_feature_query_lengths[i] = float(0);
 		}
-		
-		for (int j=0; j<query.size(); j++)
-			avg_switched_feature_query_lengths[j] += switched_feature_query_lengths[j];
+
+
+		for (int i=0; i<NUM_REPS; i++)
+		{
+			std::map<int, float> switched_feature_query_lengths;
+			for (int k=0; k<query.size(); k++)
+			{
+				if (std::find(omitted_feats.begin(), omitted_feats.end(), k) == omitted_feats.end())
+				{
+					std::vector<double> updated_query = switch_feature(k, data, query);
+
+					float updated_pathlen = max_float(float(0), base_pathlen - get_path_length(updated_query, *iff));
+					switched_feature_query_lengths[k] = updated_pathlen;
+				}
+			}
+			
+			for (int j=0; j<query.size(); j++)
+			{
+				if (std::find(omitted_feats.begin(), omitted_feats.end(), j) == omitted_feats.end())
+					avg_switched_feature_query_lengths[j] += switched_feature_query_lengths[j];
+			}
+		}
+
+		for (int i=0; i<query.size(); i++)
+		{
+			if (std::find(omitted_feats.begin(), omitted_feats.end(), i) == omitted_feats.end())
+				avg_switched_feature_query_lengths[i] /= NUM_REPS;
+		}
+
+		ftplen myvec = map_to_vector_pair(avg_switched_feature_query_lengths);
+		std::vector<int> ord_feats = ordered_feats(myvec);
+		omitted_feats.push_back(ord_feats.front());
 	}
-
-	for (int i=0; i<query.size(); i++)
-		avg_switched_feature_query_lengths[i] /= NUM_REPS;
-
-	return avg_switched_feature_query_lengths;
+	
+	// return avg_switched_feature_query_lengths;
+	return omitted_feats;
 }
 
 
@@ -89,14 +115,16 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 			anomaly_ctr++;
 		}
 		
-		std::map<int, float> qpoint_avg_lens_map = build_avg_feat_lens(qpoint, nominal_df, df, &iff);
+		/* std::map<int, float> qpoint_avg_lens_map = build_avg_feat_lens(qpoint, nominal_df, df, &iff);
 
 		ftplen myvec = map_to_vector_pair(qpoint_avg_lens_map);
 		std::vector<int> ord_feats = ordered_feats(myvec);
 
 		feats.push_back(ord_feats);
-		
-		printf("%d\/%d, %f\n", i + 1, qdata.size(), iff.instanceScore(vector_to_dub_ptr(qpoint)));		// status printout
+		*/
+		feats.push_back(build_avg_feat_lens(qpoint, nominal_df, df, &iff));
+		// printf("%d\/%d, %f\n", i + 1, qdata.size(), iff.instanceScore(vector_to_dub_ptr(qpoint)));		// status printout
+		std::cout << i+1 << '/' << qdata.size() << ',' << iff.instanceScore(vector_to_dub_ptr(qpoint)) << std::endl;
 	}
 
 	write_refidx_file(refidx);

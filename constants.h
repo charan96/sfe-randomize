@@ -15,7 +15,7 @@ typedef std::vector<std::pair<std::string, std::vector<double> > > dataframe;
 typedef std::vector<std::pair<int, float> > ftplen;
 
 const int COL_START = 2;	// features starting from 3rd column in dataset (starting from 0); E.g in the infile, first 2 cols are metadata i.e, ground truth and diff score
-const int NUM_REPS = 30;		// change to 30 after testing
+const int NUM_REPS = 20;		// change to 25 after testing
 
 const std::string INFILE = "data/benchid_100_shuttle.csv";
 const std::string REF_FILE = "anomaly_refidx.csv";

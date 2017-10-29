@@ -4,3 +4,4 @@ iforest/*
 *.o
 *.swp
 build-scripts/*
+misc/*
