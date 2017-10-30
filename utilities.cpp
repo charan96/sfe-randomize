@@ -198,3 +198,32 @@ int get_num_cols_in_file(std::string filename)
 }
 
 
+double avg_depth_of_all_datapoints(std::vector<std::vector<double> > path_lengths)
+{
+	int num_elements = 0;
+	double sum_elements = 0.0;
+
+	for (int i=0; i<path_lengths.size(); i++)
+	{
+		for (int j=0; j<path_lengths[i].size(); j++)
+		{
+			printf("%d, %d, %f\n", i, j, path_lengths[i][j]);
+			sum_elements += path_lengths[i][j];
+			num_elements++;
+		}
+	}
+
+	return sum_elements/num_elements;
+}
+
+
+std::vector<int> subvector(std::vector<int> vec, int num_elements)
+{
+	std::vector<int> sub_vec;
+
+	for (int i=0; i<num_elements; i++)
+		sub_vec.push_back(vec.at(i));
+
+	return sub_vec;
+}
+

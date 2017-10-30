@@ -24,9 +24,8 @@ forest.o: iforest/Forest.o iforest/IsolationForest.o iforest/Tree.o iforest/util
 %.o: %.cpp
 	$(PP) $(CPFLAGS) -c $< -o $@
 
-all: cincl.o forest.o print_funcs.o utilities.o randomize-method.o main.o
-	$(PP) $(CPFLAGS) -o exec_obj cincl.o forest.o print_funcs.o randomize-method.o utilities.o main.o
-	# $(CPP) $(CPFLAGS) print_funcs.cpp utilities.cpp randomize-method.cpp main.cpp -o exec_obj
+all: cincl.o build-mfp.o forest.o print_funcs.o utilities.o randomize-method.o main.o
+	$(PP) $(CPFLAGS) -o exec_obj cincl.o forest.o build-mfp.o print_funcs.o randomize-method.o utilities.o main.o
 	./exec_obj
 
 clean:
