@@ -28,67 +28,54 @@ dataframe get_data_set(std::string input_file)
 }
 
 
-std::vector<double> switch_feature(int feat_num, dataframe data, std::vector<double> query)
+std::vector<double> switch_feature(std::vector<int> feat_num, dataframe data, std::vector<double> query)
 {
 	int rand_dataidx = randint(0, get_lines_in_file(INFILE) - 2);
-	query.at(feat_num) = data.at(rand_dataidx).second.at(feat_num);
-	
+
+	for (int k: feat_num)
+		query.at(k - 1) = data.at(rand_dataidx).second.at(k - 1);               //FIXME: DANGEROUS; change k - 1 to k
+
 	return query;
 }
 
 
 std::vector<int> build_avg_feat_lens(std::vector<double> query, dataframe data, doubleframe *df, IsolationForest *iff)
 {
-	std::map<int, float> hello;
-	float base_pathlen = get_path_length(query, *iff);
+	double base_pathlen = get_path_length(query, *iff);
 	std::vector<int> omitted_feats;
-
 
 	while (omitted_feats.size() < query.size())
 	{
-		std::map<int, float> avg_switched_feature_query_lengths;
-		// initialize to 0
+		std::map<int, double> avg_switched_feature_query_lengths;
+
 		for (int i=0; i<query.size(); i++)
 		{
 			// if (!omitted_feats.contains(i))
 			if (std::find(omitted_feats.begin(), omitted_feats.end(), i) == omitted_feats.end())
-				avg_switched_feature_query_lengths[i] = float(0);
-		}
-
-
-		for (int i=0; i<NUM_REPS; i++)
-		{
-			std::map<int, float> switched_feature_query_lengths;
-			for (int k=0; k<query.size(); k++)
-			{
-				if (std::find(omitted_feats.begin(), omitted_feats.end(), k) == omitted_feats.end())
-				{
-					std::vector<double> updated_query = switch_feature(k, data, query);
-
-					float updated_pathlen = max_float(float(0), base_pathlen - get_path_length(updated_query, *iff));
-					switched_feature_query_lengths[k] = updated_pathlen;
-				}
-			}
-			
-			for (int j=0; j<query.size(); j++)
-			{
-				if (std::find(omitted_feats.begin(), omitted_feats.end(), j) == omitted_feats.end())
-					avg_switched_feature_query_lengths[j] += switched_feature_query_lengths[j];
-			}
+				avg_switched_feature_query_lengths[i] = double(0);
 		}
 
 		for (int i=0; i<query.size(); i++)
 		{
 			if (std::find(omitted_feats.begin(), omitted_feats.end(), i) == omitted_feats.end())
-				avg_switched_feature_query_lengths[i] /= NUM_REPS;
+			{
+				for (int reps=0; reps<NUM_REPS; reps++)
+				{
+					std::vector<int> switch_features_vector = omitted_feats;
+					switch_features_vector.push_back(i);
+					
+					std::vector<double> updated_query = switch_feature(switch_features_vector, data, query);
+					avg_switched_feature_query_lengths[i] += (base_pathlen - vector_avg(iff->pathLength(vector_to_dub_ptr(updated_query))));
+				}
+			}
+			avg_switched_feature_query_lengths[i] /= NUM_REPS;
 		}
 
 		ftplen myvec = map_to_vector_pair(avg_switched_feature_query_lengths);
 		std::vector<int> ord_feats = ordered_feats(myvec);
 		omitted_feats.push_back(ord_feats.front());
 	}
-	
-	// return avg_switched_feature_query_lengths;
+
 	return omitted_feats;
 }
 
@@ -102,28 +89,19 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 	std::vector<std::string> refidx;
 	int anomaly_ctr = 1;
 
-	// std::ofstream ref_file(REF_FILE.c_str());
-	// ref_file << "idx,anoIdx,ano_score" << std::endl;
-
 	for (int i=0; i<qdata.size(); i++)
 	{
 		std::vector<double> qpoint = qdata.at(i).second;
 
+		// FIXME
 		if (iff.instanceScore(vector_to_dub_ptr(qpoint)) > 0.4)		// assuming lower score means anomaly
 		{
 			refidx.push_back(std::to_string(anomaly_ctr) + "," + std::to_string(i + 1) + "," + std::to_string(iff.instanceScore(vector_to_dub_ptr(qpoint))));
 			anomaly_ctr++;
 		}
+		// FIXME
 		
-		/* std::map<int, float> qpoint_avg_lens_map = build_avg_feat_lens(qpoint, nominal_df, df, &iff);
-
-		ftplen myvec = map_to_vector_pair(qpoint_avg_lens_map);
-		std::vector<int> ord_feats = ordered_feats(myvec);
-
-		feats.push_back(ord_feats);
-		*/
 		feats.push_back(build_avg_feat_lens(qpoint, nominal_df, df, &iff));
-		// printf("%d\/%d, %f\n", i + 1, qdata.size(), iff.instanceScore(vector_to_dub_ptr(qpoint)));		// status printout
 		std::cout << i+1 << '/' << qdata.size() << ',' << iff.instanceScore(vector_to_dub_ptr(qpoint)) << std::endl;
 	}
 

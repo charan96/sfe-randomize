@@ -8,7 +8,7 @@
 std::vector<double> str_to_double_vector(std::vector<std::string> vec)
 {
 	std::vector<double> dub_vector(vec.size() - COL_START);
-	
+
 	for (int i=COL_START;i<vec.size();i++)
 	{
 		dub_vector[i - COL_START] = std::stod(vec.at(i));
@@ -57,7 +57,7 @@ std::vector<std::string> split(std::string str, char delim)
 
 
 /* sort descending */
-bool sort_by_second(const std::pair<int, float> &a, const std::pair<int, float> &b)
+bool sort_by_second(const std::pair<int, double> &a, const std::pair<int, double> &b)
 {
 	// return (a.second < b.second);	/* for ascending sort */
 	return (a.second > b.second);
@@ -72,10 +72,10 @@ ftplen sort_vector_pair(ftplen vec)
 }
 
 
-float vector_avg(std::vector<double> vec)
+double vector_avg(std::vector<double> vec)
 {
 	double sum = 0.0; 
-	
+
 	for (int i=0; i<vec.size(); i++)
 		sum += vec.at(i);
 
@@ -83,7 +83,7 @@ float vector_avg(std::vector<double> vec)
 }
 
 
-float max_float(float a, float b)
+double max_double(double a, double b)
 {
 	if (a > b)
 		return a;
@@ -94,7 +94,7 @@ float max_float(float a, float b)
 }
 
 
-ftplen map_to_vector_pair(std::map<int, float> mymap)
+ftplen map_to_vector_pair(std::map<int, double> mymap)
 {
 	ftplen vec;
 
@@ -107,11 +107,11 @@ ftplen map_to_vector_pair(std::map<int, float> mymap)
 }
 
 
-std::vector<int> get_keys(std::map<int, float> mymap)
+std::vector<int> get_keys(std::map<int, double> mymap)
 {
 	std::vector<int> vec;
 
-	for (std::map<int, float>::iterator it = mymap.begin(); it != mymap.end(); ++it)
+	for (std::map<int, double>::iterator it = mymap.begin(); it != mymap.end(); ++it)
 		vec.push_back(it->first);
 
 	return vec;
@@ -159,11 +159,11 @@ std::vector<int> ordered_feats(ftplen vec)
 }
 
 
-float get_path_length(std::vector<double> inst, IsolationForest &iff)
+double get_path_length(std::vector<double> inst, IsolationForest &iff)
 {
 	double *query = vector_to_dub_ptr(inst);
 	std::vector<double> plens = iff.pathLength(query);
-	
+
 	return vector_avg(plens);
 }
 
