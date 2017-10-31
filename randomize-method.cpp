@@ -36,23 +36,23 @@ std::vector<double> switch_feature(int feat_num, dataframe data, std::vector<dou
 }
 
 
-std::map<int, float> build_avg_feat_lens(std::vector<double> query, dataframe data, doubleframe *df, IsolationForest *iff)
+std::map<int, double> build_avg_feat_lens(std::vector<double> query, dataframe data, doubleframe *df, IsolationForest *iff)
 {
-	std::map<int, float> avg_switched_feature_query_lengths;
-	float base_pathlen = get_path_length(query, *iff);
+	std::map<int, double> avg_switched_feature_query_lengths;
+	double base_pathlen = get_path_length(query, *iff);
 
 	// initialize to 0
 	for (int i=0; i<query.size(); i++)
-		avg_switched_feature_query_lengths[i] = float(0);
+		avg_switched_feature_query_lengths[i] = double(0);
 
 	for (int i=0; i<NUM_REPS; i++)
 	{
-		std::map<int, float> switched_feature_query_lengths;
+		std::map<int, double> switched_feature_query_lengths;
 		for (int k=0; k<query.size(); k++)
 		{
 			std::vector<double> updated_query = switch_feature(k, data, query);
 
-			float updated_pathlen = max_float(float(0), base_pathlen - get_path_length(updated_query, *iff));
+			double updated_pathlen = max_double(double(0), base_pathlen - get_path_length(updated_query, *iff));
 			switched_feature_query_lengths[k] = updated_pathlen;
 		}
 		
@@ -89,7 +89,7 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 			anomaly_ctr++;
 		}
 		
-		std::map<int, float> qpoint_avg_lens_map = build_avg_feat_lens(qpoint, nominal_df, df, &iff);
+		std::map<int, double> qpoint_avg_lens_map = build_avg_feat_lens(qpoint, nominal_df, df, &iff);
 
 		ftplen myvec = map_to_vector_pair(qpoint_avg_lens_map);
 		std::vector<int> ord_feats = ordered_feats(myvec);
