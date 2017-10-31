@@ -29,11 +29,10 @@ dataframe get_data_set(std::string input_file)
 
 std::vector<double> switch_feature(std::vector<int> feat_num, dataframe data, std::vector<double> query)
 {
+	int rand_dataidx = randint(0, get_lines_in_file(INFILE) - 2);
+	
 	for (int k: feat_num)
-	{
-		int rand_dataidx = randint(0, get_lines_in_file(INFILE) - 2);
 		query.at(k - 1) = data.at(rand_dataidx).second.at(k - 1);		//FIXME: DANGEROUS; change k - 1 to k
-	}
 
 	return query;
 }
@@ -56,7 +55,7 @@ std::map<int, float> build_avg_feat_lens(std::vector<double> query, dataframe da
 			std::vector<int> feat_num = {k};
 			std::vector<double> updated_query = switch_feature(feat_num, data, query);
 
-			float updated_pathlen = max_float(float(0), base_pathlen - get_path_length(updated_query, *iff));
+			float updated_pathlen = max_float(0, base_pathlen - get_path_length(updated_query, *iff));
 			switched_feature_query_lengths[k] = updated_pathlen;
 		}
 		
