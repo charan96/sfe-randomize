@@ -41,7 +41,7 @@ std::vector<double> switch_feature(std::vector<int> feat_num, dataframe data, st
 
 std::vector<int> build_avg_feat_lens(std::vector<double> query, dataframe data, doubleframe *df, IsolationForest *iff)
 {
-	double base_pathlen = get_path_length(query, *iff);
+	double base_pathlen = vector_avg(iff->pathLength(vector_to_dub_ptr(query)));
 	std::vector<int> omitted_feats;
 
 	while (omitted_feats.size() < query.size())
