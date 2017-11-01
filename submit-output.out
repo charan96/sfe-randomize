@@ -1,0 +1,194 @@
+compute-6-26l.hpc.engr.oregonstate.edu
+Tue Oct 31 16:52:10 PDT 2017
+gcc --std=c99 -D_GNU_SOURCE -Wall -Werror -g -c iforest/C/common.c -o iforest/C/common.o
+gcc --std=c99 -D_GNU_SOURCE -Wall -Werror -g -c iforest/C/object.c -o iforest/C/object.o
+gcc --std=c99 -D_GNU_SOURCE -Wall -Werror -g -c iforest/C/strfun.c -o iforest/C/strfun.o
+gcc --std=c99 -D_GNU_SOURCE -Wall -Werror -g -c iforest/C/readwrite.c -o iforest/C/readwrite.o
+gcc --std=c99 -D_GNU_SOURCE -Wall -Werror -g -c iforest/C/argparse.c -o iforest/C/argparse.o
+gcc --std=c99 -D_GNU_SOURCE -Wall -Werror -g -c iforest/C/argparse_iforest.c -o iforest/C/argparse_iforest.o
+gcc --std=c99 -D_GNU_SOURCE -Wall -Werror -g -c iforest/C/frames.c -o iforest/C/frames.o
+ld -r iforest/C/common.o iforest/C/object.o iforest/C/strfun.o iforest/C/readwrite.o iforest/C/argparse.o iforest/C/argparse_iforest.o iforest/C/frames.o -o cincl.o
+g++ --std=c++11 -Wall -Werror -g   -c iforest/Forest.cpp -o iforest/Forest.o
+g++ --std=c++11 -Wall -Werror -g   -c iforest/IsolationForest.cpp -o iforest/IsolationForest.o
+g++ --std=c++11 -Wall -Werror -g   -c iforest/Tree.cpp -o iforest/Tree.o
+g++ --std=c++11 -Wall -Werror -g   -c iforest/utility.cpp -o iforest/utility.o
+ld -r iforest/Forest.o iforest/IsolationForest.o iforest/Tree.o iforest/utility.o -o forest.o
+g++ --std=c++11 -Wall -g -c print_funcs.cpp -o print_funcs.o
+print_funcs.cpp: In function ‘void print_dataframe(dataframe)’:
+print_funcs.cpp:7:26: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (int i=0; i<df.size(); i++)
+                          ^
+print_funcs.cpp:12:37: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   for (int j=0; j<df[i].second.size(); j++)
+                                     ^
+print_funcs.cpp: In function ‘void print_vector_pair(ftplen)’:
+print_funcs.cpp:24:27: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (int i=0; i<vec.size(); i++)
+                           ^
+print_funcs.cpp: In function ‘void print_explanations(std::vector<std::vector<int> >)’:
+print_funcs.cpp:33:46: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (int i=0; i<ranked_feats.at(0).size() - 1; i++)
+                                              ^
+print_funcs.cpp:37:38: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (int id=0; id<ranked_feats.size(); id++)
+                                      ^
+print_funcs.cpp:41:48: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   for (int i=0; i<ranked_feats.at(id).size() - 1; i++)
+                                                ^
+g++ --std=c++11 -Wall -g -c utilities.cpp -o utilities.o
+utilities.cpp: In function ‘std::vector<double> str_to_double_vector(std::vector<std::basic_string<char> >)’:
+utilities.cpp:12:34: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (int i=COL_START;i<vec.size();i++)
+                                  ^
+utilities.cpp: In function ‘double vector_avg(std::vector<double>)’:
+utilities.cpp:79:27: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (int i=0; i<vec.size(); i++)
+                           ^
+utilities.cpp: In function ‘std::vector<int> ordered_feats(ftplen)’:
+utilities.cpp:155:27: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (int i=0; i<vec.size(); i++)
+                           ^
+g++ --std=c++11 -Wall -g -c randomize-method.cpp -o randomize-method.o
+randomize-method.cpp: In function ‘std::vector<int> build_avg_feat_lens(std::vector<double>, dataframe, doubleframe*, IsolationForest*)’:
+randomize-method.cpp:51:30: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   for (int i=0; i<query.size(); i++)
+                              ^
+randomize-method.cpp:58:30: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   for (int i=0; i<query.size(); i++)
+                              ^
+randomize-method.cpp: In function ‘std::vector<std::vector<int> > get_ranked_features(std::string, dataframe, doubleframe*)’:
+randomize-method.cpp:92:29: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (int i=0; i<qdata.size(); i++)
+                             ^
+randomize-method.cpp: In function ‘void write_refidx_file(std::vector<std::basic_string<char> >)’:
+randomize-method.cpp:120:30: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (int i=0; i<refidx.size(); i++)
+                              ^
+randomize-method.cpp: In function ‘void build_expl_file(std::vector<std::vector<int> >)’:
+randomize-method.cpp:137:42: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (int i=1; i<ranked_feats.at(0).size(); i++)
+                                          ^
+randomize-method.cpp:141:38: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+  for (int id=0; id<ranked_feats.size(); id++)
+                                      ^
+randomize-method.cpp:145:48: warning: comparison between signed and unsigned integer expressions [-Wsign-compare]
+   for (int i=0; i<ranked_feats.at(id).size() - 1; i++)
+                                                ^
+g++ --std=c++11 -Wall -g -c main.cpp -o main.o
+g++ --std=c++11 -Wall -g -o exec_obj cincl.o forest.o print_funcs.o randomize-method.o utilities.o main.o
+# gcc -E --std=c++11 -Wall -g print_funcs.cpp utilities.cpp randomize-method.cpp main.cpp -o exec_obj
+./exec_obj
+1/5400,0.449666
+2/5400,0.358789
+3/5400,0.330894
+4/5400,0.308928
+5/5400,0.345478
+6/5400,0.36263
+7/5400,0.517261
+8/5400,0.394879
+9/5400,0.321686
+10/5400,0.552861
+11/5400,0.380634
+12/5400,0.431372
+13/5400,0.520854
+14/5400,0.287347
+15/5400,0.480103
+16/5400,0.352164
+17/5400,0.509606
+18/5400,0.338377
+19/5400,0.339099
+20/5400,0.344926
+21/5400,0.369255
+22/5400,0.379622
+23/5400,0.33266
+24/5400,0.353103
+25/5400,0.454965
+26/5400,0.502867
+27/5400,0.322715
+28/5400,0.36321
+29/5400,0.59883
+30/5400,0.44704
+31/5400,0.358598
+32/5400,0.417808
+33/5400,0.555517
+34/5400,0.290423
+35/5400,0.382667
+36/5400,0.321515
+37/5400,0.443011
+38/5400,0.323921
+39/5400,0.425215
+40/5400,0.270711
+41/5400,0.292441
+42/5400,0.30387
+43/5400,0.344743
+44/5400,0.369846
+45/5400,0.45642
+46/5400,0.308763
+47/5400,0.577843
+48/5400,0.475776
+49/5400,0.364372
+50/5400,0.551685
+51/5400,0.40575
+52/5400,0.391529
+53/5400,0.583719
+54/5400,0.464264
+55/5400,0.363791
+56/5400,0.381649
+57/5400,0.489655
+58/5400,0.434832
+59/5400,0.449427
+60/5400,0.297467
+61/5400,0.404887
+62/5400,0.328961
+63/5400,0.421383
+64/5400,0.425895
+65/5400,0.389243
+66/5400,0.380027
+67/5400,0.48318
+68/5400,0.47174
+69/5400,0.318787
+70/5400,0.472494
+71/5400,0.341091
+72/5400,0.311737
+73/5400,0.422732
+74/5400,0.298418
+75/5400,0.576
+76/5400,0.362244
+77/5400,0.308763
+78/5400,0.537763
+79/5400,0.327737
+80/5400,0.335507
+81/5400,0.325997
+82/5400,0.414705
+83/5400,0.420263
+84/5400,0.338377
+85/5400,0.284909
+86/5400,0.277424
+87/5400,0.319807
+88/5400,0.420711
+89/5400,0.50636
+90/5400,0.297783
+91/5400,0.401024
+92/5400,0.401024
+93/5400,0.308435
+94/5400,0.307451
+95/5400,0.416476
+96/5400,0.313068
+97/5400,0.465502
+98/5400,0.354799
+99/5400,0.342365
+100/5400,0.310577
+101/5400,0.48421
+102/5400,0.314572
+103/5400,0.38287
+104/5400,0.363403
+105/5400,0.376803
+106/5400,0.363597
+107/5400,0.426803
+108/5400,0.3222
+109/5400,0.401452
+110/5400,0.36263
+111/5400,0.350107
+112/5400,0.362823
+113/5400,0.401452
+114/5400,0.517261

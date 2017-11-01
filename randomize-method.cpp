@@ -33,7 +33,7 @@ std::vector<double> switch_feature(std::vector<int> feat_num, dataframe data, st
 	int rand_dataidx = randint(0, get_lines_in_file(INFILE) - 2);
 
 	for (int k: feat_num)
-		query.at(k - 1) = data.at(rand_dataidx).second.at(k - 1);               //FIXME: DANGEROUS; change k - 1 to k
+		query.at(k) = data.at(rand_dataidx).second.at(k);               //FIXME: DANGEROUS; change k - 1 to k
 
 	return query;
 }
@@ -67,8 +67,8 @@ std::vector<int> build_avg_feat_lens(std::vector<double> query, dataframe data, 
 					std::vector<double> updated_query = switch_feature(switch_features_vector, data, query);
 					avg_switched_feature_query_lengths[i] += (base_pathlen - vector_avg(iff->pathLength(vector_to_dub_ptr(updated_query))));
 				}
+				avg_switched_feature_query_lengths[i] /= NUM_REPS;
 			}
-			avg_switched_feature_query_lengths[i] /= NUM_REPS;
 		}
 
 		ftplen myvec = map_to_vector_pair(avg_switched_feature_query_lengths);

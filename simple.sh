@@ -5,7 +5,7 @@
 #$ -cwd
 
 # name this job
-#$ -N indep-method
+#$ -N sequential-method
 
 # send stdout and stderror to this file
 #$ -o submit-output.out
