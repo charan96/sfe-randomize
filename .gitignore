@@ -5,3 +5,4 @@ iforest/*
 *.swp
 build-scripts/*
 misc/*
+submit-output.out
