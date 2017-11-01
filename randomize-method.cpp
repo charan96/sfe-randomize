@@ -102,7 +102,7 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 		// FIXME
 		
 		feats.push_back(build_avg_feat_lens(qpoint, nominal_df, df, &iff));
-		std::cout << i+1 << '/' << qdata.size() << ',' << iff.instanceScore(vector_to_dub_ptr(qpoint)) << std::endl;
+		std::cout << i + 1 << '/' << qdata.size() << ',' << iff.instanceScore(vector_to_dub_ptr(qpoint)) << std::endl;
 	}
 
 	write_refidx_file(refidx);
