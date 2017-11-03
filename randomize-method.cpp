@@ -3,6 +3,7 @@
 #include "utilities.h"
 #include "randomize-method.h"
 #include "build-mfp.h"
+#include <algorithm>
 
 
 dataframe get_data_set(std::string input_file)
