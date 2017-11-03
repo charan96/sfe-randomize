@@ -92,19 +92,20 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 		std::vector<int> ordered_feats = build_avg_feat_lens(qpoint, nominal_df, df, &iff);
 		feats.push_back(ordered_feats);
 		
-		// writing MFP to file
-		int mfp = compute_mfp_while_building_expls(qpoint, ordered_feats, nominal_df, df, &iff);
-		mfp_file << i << ", " << mfp << std::endl;
-		avg_mfp.push_back(mfp);
-		
-		printf("%d\/%d, %f\n", i + 1, qdata.size(), iff.instanceScore(vector_to_dub_ptr(qpoint)));		// status printout
+		/******* BUILDING MFP ONLY FOR ANOMALIES *******/	 // remove if statement for computing MFP for all datapoints; comment whole block if MFP  not needed
+		if (qdata.at(i).first == "anomaly")
+		{
+			int mfp = compute_mfp_while_building_expls(qpoint, ordered_feats, nominal_df, df, &iff);
+			mfp_file << i << ", " << mfp << std::endl;
+			avg_mfp.push_back(mfp);
+		}
 
-		if (i == 30)
-			break;
+		printf("%d\/%d, %f\n", i + 1, qdata.size(), iff.instanceScore(vector_to_dub_ptr(qpoint)));		// status printout
 	}
 
 	printf("Average MFP: %f\n", double_vector_avg(avg_mfp));
 
+	mfp_file.close();
 	write_refidx_file(refidx);
 
 	return feats;
