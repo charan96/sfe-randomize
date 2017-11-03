@@ -42,6 +42,10 @@ bool compute_mfp_while_building_expls(std::vector<double> query, std::vector<int
 		updated_qdepths.push_back(double_vector_avg(iff->pathLength(vector_to_dub_ptr(updated_query))));
 	}
 
+	printf("num_feats: %d\tavg_qdepths: %f\n",ordered_feats.size(), double_vector_avg(updated_qdepths));
+	print_vector(ordered_feats);
+	printf("\n");
+
 	if (double_vector_avg(updated_qdepths) > ((1.0 - TOLERANCE) * nominal_depth))                // tolerance given as 0.1 for 10% tolerance level; adjust in constants.h
 		return true;
 	else

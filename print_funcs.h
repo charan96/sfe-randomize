@@ -6,8 +6,12 @@
 template <typename T>
 void print_vector(std::vector<T> vec)
 {
+	std::cout << "printing vector: " << std::endl;
+
 	for (int i=0; i<vec.size(); i++)
 		std::cout << vec.at(i) << std::endl;
+
+	std::cout << std::endl;
 }
 
 

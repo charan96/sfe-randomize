@@ -224,7 +224,7 @@ std::vector<std::vector<int> > read_bench_expl_file(std::string input_file)
 			if (k == 0)
 				continue;
 
-			ord_feats.push_back(std::stoi(split_line.at(k)));
+			ord_feats.push_back(std::stoi(split_line.at(k)));		// subtract 1 from stoi to change back to start from 0
 		}
 
 		expls.push_back(ord_feats);

@@ -79,6 +79,7 @@ std::pair<int, std::vector<int> > build_avg_feat_lens(std::vector<double> query,
 
 		if (compute_mfp_while_building_expls(query, omitted_feats, data, df, iff))
 			break;
+		printf("\n\n");
 	}
 
 	int mfp = omitted_feats.size();
@@ -118,6 +119,9 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 		feats.push_back(mfp_ord_feats_pair.second);
 
 		std::cout << i + 1 << '/' << qdata.size() << ',' << iff.instanceScore(vector_to_dub_ptr(qpoint)) << std::endl;
+
+		if (i==40)
+			break;
 	}
 
 	std::cout << "Average MFP (Sequential): " << double_vector_avg(avg_mfp) << std::endl;
