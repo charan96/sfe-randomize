@@ -72,7 +72,7 @@ ftplen sort_vector_pair(ftplen vec)
 }
 
 
-double vector_avg(std::vector<double> vec)
+double double_vector_avg(std::vector<double> vec)
 {
 	double sum = 0.0; 
 
@@ -162,7 +162,7 @@ double get_path_length(std::vector<double> inst, IsolationForest &iff)
 	double *query = vector_to_dub_ptr(inst);
 	std::vector<double> plens = iff.pathLength(query);
 
-	return vector_avg(plens);
+	return double_vector_avg(plens);
 }
 
 

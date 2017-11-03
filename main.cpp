@@ -44,7 +44,7 @@ int main()
 		exit(0);
 	}
 
-	std::cout << "Average MFP: " << vector_avg(avg_mfp) << std::endl; */
+	std::cout << "Average MFP: " << double_vector_avg(avg_mfp) << std::endl; */
 
 	/****************************************************************/
 	/****************************************************************/

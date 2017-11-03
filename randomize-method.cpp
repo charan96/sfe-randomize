@@ -2,6 +2,7 @@
 #include "print_funcs.h"
 #include "utilities.h"
 #include "randomize-method.h"
+#include "build-mfp.h"
 
 
 dataframe get_data_set(std::string input_file)
@@ -38,10 +39,10 @@ std::vector<double> switch_feature(std::vector<int> feat_num, dataframe data, st
 }
 
 
-std::map<int, double> build_avg_feat_lens(std::vector<double> query, dataframe data, doubleframe *df, IsolationForest *iff)
+std::vector<int> build_avg_feat_lens(std::vector<double> query, dataframe data, doubleframe *df, IsolationForest *iff)
 {
 	std::map<int, double> avg_switched_feature_query_lengths;
-	double base_pathlen = vector_avg(iff->pathLength(vector_to_dub_ptr(query)));
+	double base_pathlen = double_vector_avg(iff->pathLength(vector_to_dub_ptr(query)));
 
 	// initialize to 0
 	for (int i=0; i<query.size(); i++)
@@ -52,13 +53,16 @@ std::map<int, double> build_avg_feat_lens(std::vector<double> query, dataframe d
 		for (int k=0; k<NUM_REPS; k++)
 		{
 			std::vector<double> updated_query = switch_feature(std::vector<int> {i}, data, query);
-			avg_switched_feature_query_lengths[i] += (base_pathlen - vector_avg(iff->pathLength(vector_to_dub_ptr(updated_query))));
+			avg_switched_feature_query_lengths[i] += (base_pathlen - double_vector_avg(iff->pathLength(vector_to_dub_ptr(updated_query))));
 		}
 
 		avg_switched_feature_query_lengths[i] /= NUM_REPS;
 	}
 
-	return avg_switched_feature_query_lengths;
+	ftplen myvec = map_to_vector_pair(avg_switched_feature_query_lengths);
+	std::vector<int> ord_feats = ordered_feats(myvec);
+	
+	return ord_feats;
 }
 
 
@@ -69,7 +73,11 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 	
 	IsolationForest iff = build_Isolation_forest(df);
 	std::vector<std::string> refidx;
+	std::vector<double> avg_mfp;
 	int anomaly_ctr = 1;
+	
+	std::ofstream mfp_file(MFP_FILE.c_str());
+	mfp_file << "idx, MFP" << std::endl;
 
 	for (int i=0; i<qdata.size(); i++)
 	{
@@ -81,18 +89,21 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 			anomaly_ctr++;
 		}
 		
-		std::map<int, double> qpoint_avg_lens_map = build_avg_feat_lens(qpoint, nominal_df, df, &iff);
-
-		ftplen myvec = map_to_vector_pair(qpoint_avg_lens_map);
-		std::vector<int> ord_feats = ordered_feats(myvec);
-
-		feats.push_back(ord_feats);
+		std::vector<int> ordered_feats = build_avg_feat_lens(qpoint, nominal_df, df, &iff);
+		feats.push_back(ordered_feats);
+		
+		// writing MFP to file
+		int mfp = compute_mfp_while_building_expls(qpoint, ordered_feats, nominal_df, df, &iff);
+		mfp_file << i << ", " << mfp << std::endl;
+		avg_mfp.push_back(mfp);
 		
 		printf("%d\/%d, %f\n", i + 1, qdata.size(), iff.instanceScore(vector_to_dub_ptr(qpoint)));		// status printout
 
 		if (i == 30)
 			break;
 	}
+
+	printf("Average MFP: %f\n", double_vector_avg(avg_mfp));
 
 	write_refidx_file(refidx);
 
