@@ -8,7 +8,7 @@
 std::vector<double> str_to_double_vector(std::vector<std::string> vec)
 {
 	std::vector<double> dub_vector(vec.size() - COL_START);
-	
+
 	for (int i=COL_START;i<vec.size();i++)
 	{
 		dub_vector[i - COL_START] = std::stod(vec.at(i));
@@ -75,7 +75,7 @@ ftplen sort_vector_pair(ftplen vec)
 float vector_avg(std::vector<double> vec)
 {
 	double sum = 0.0; 
-	
+
 	for (int i=0; i<vec.size(); i++)
 		sum += vec.at(i);
 
@@ -126,20 +126,20 @@ doubleframe* build_doubleframe(std::string input_name, int metacols)
 	doubleframe* dt = conv_frame(double, ntstring, csv);
 
 	/* for (int k=0; k<dt->ncol; k++)
-		std::cout << dt->data[0][k] << std::endl;
-	printf("\n");
-	*/
+	   std::cout << dt->data[0][k] << std::endl;
+	   printf("\n");
+	   */
 	for (int inst=0; inst<dt->nrow; inst++)
 	{
 		/* std::vector<double> new_inst;
-		for (int i=0; i<dt->ncol; i++)
-		{
-			if (i == metacols)
-				continue;
-			new_inst.push_back(dt->data[inst][i]);
-		}
+		   for (int i=0; i<dt->ncol; i++)
+		   {
+		   if (i == metacols)
+		   continue;
+		   new_inst.push_back(dt->data[inst][i]);
+		   }
 
-		dt->data[inst] = vector_to_dub_ptr(new_inst);*/
+		   dt->data[inst] = vector_to_dub_ptr(new_inst);*/
 
 		dt->data[inst] = &dt->data[inst][metacols + 2];  //FIXME: works for only removing first col
 	}		
@@ -181,7 +181,7 @@ float get_path_length(std::vector<double> inst, IsolationForest &iff)
 {
 	double *query = vector_to_dub_ptr(inst);
 	std::vector<double> plens = iff.pathLength(query);
-	
+
 	return vector_avg(plens);
 }
 
@@ -248,4 +248,29 @@ std::vector<std::vector<int> > read_bench_expl_file(std::string input_file)
 	}
 
 	return expls;
+}
+
+
+std::vector<std::vector<double> > get_all_datapoints(dataframe data)
+{
+	std::vector<std::vector<double> > datapoints;
+
+	for (int i=0; i<data.size(); i++)
+		datapoints.push_back(data.at(i).second);
+
+	return datapoints;
+}
+
+
+std::vector<int> get_anomalies_idx(dataframe data)
+{
+	std::vector<int> indices;
+
+	for (int i=0; i<data.size(); i++)
+	{
+		if (data.at(i).first == "anomaly")
+			indices.push_back(i);
+	}
+
+	return indices;
 }

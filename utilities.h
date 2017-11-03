@@ -31,5 +31,8 @@ double avg_depth_of_all_datapoints(std::vector<std::vector<double> > path_length
 std::vector<int> subvector(std::vector<int> vec, int num_elements);
 
 std::vector<std::vector<int> > read_bench_expl_file(std::string input_file);
+std::vector<std::vector<double> > get_all_datapoints(dataframe data);
+
+std::vector<int> get_anomalies_idx(dataframe data);
 
 #endif

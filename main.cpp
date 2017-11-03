@@ -32,7 +32,31 @@ int main()
 
 	IsolationForest iff = build_Isolation_forest(df);
 	
-	std::vector<double> query = {-0.591456511418738,-0.0382327712748949,-0.600837877821693,-0.00711012151427251,0.343956152809745,0.0753308156077501,0.145498235892871,-0.554884846882962,-0.543937066541179};
+	std::vector<std::vector<double> > datapoints = get_all_datapoints(ndata);
+	std::vector<std::vector<int> > expls = read_bench_expl_file(OUTFILE);
+	std::vector<int> anomalies = get_anomalies_idx(ndata);
+
+	std::vector<double> avg_mfp;
+
+	if (datapoints.size() == expls.size())
+	{
+		for (int i: anomalies)
+		{
+			std::vector<double> query = datapoints.at(i);
+			std::vector<int> explanation = expls.at(i);
+
+			avg_mfp.push_back(compute_mfp(query, explanation, ndata, df, &iff));
+		}
+	} 
+	else
+	{
+		std::cout << "ERROR: datapoints.size() != explanations.size()" << std::endl;
+		exit(0);
+	}
+
+	std::cout << "Average MFP: " << vector_avg(avg_mfp) << std::endl;
+
+	/* std::vector<double> query = {-0.591456511418738,-0.0382327712748949,-0.600837877821693,-0.00711012151427251,0.343956152809745,0.0753308156077501,0.145498235892871,-0.554884846882962,-0.543937066541179};
 	std::vector<int> ordered_feats = {7, 9, 5, 8, 3, 6, 2, 4, 1};
 	std::cout << "comp val: " << compute_mfp(query, ordered_feats, ndata, df, &iff) << std::endl;
 
@@ -46,12 +70,10 @@ int main()
 	std::cout << "comp val: " << compute_mfp(query, ordered_feats, ndata, df, &iff) << std::endl;
 
 	query = {0.389089321084738,0.000249471088424276,1.98262807698925,-0.0344912414815925,0.805633716357868,-0.103899040454445,0.984461004539289,0.00539023266182758,-0.465854822556949};
-	ordered_feats = {1, 9, 6, 2, 8, 7, 3, 4, 5}; 
+	ordered_feats = {1, 9, 6, 2, 8, 7, 3, 4, 5}; */
 
 
-	std::cout << "comp val: " << compute_mfp(query, ordered_feats, ndata, df, &iff) << std::endl;
-
-	// std::cout << "comp val: " << compute_mfp(query, ordered_feats, ndata, df, &iff) << std::endl;
+	//     std::cout << "comp val: " << compute_mfp(query, ordered_feats, ndata, df, &iff) << std::endl;
 
 	return 0;
 }

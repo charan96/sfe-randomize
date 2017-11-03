@@ -21,6 +21,7 @@ int compute_mfp(std::vector<double> query, std::vector<int> ordered_feats, dataf
 		}
 
 		// printf("qscore: %f\tupd_qscore: %f\t nom_score: %f\n\n", vector_avg(iff->pathLength(vector_to_dub_ptr(query))), vector_avg(updated_qdepths), nominal_depth);
+		
 		if (vector_avg(updated_qdepths) > (0.9 * nominal_depth))		// 10% tolerance 
 			break;
 		ctr++;
