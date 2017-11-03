@@ -72,7 +72,7 @@ ftplen sort_vector_pair(ftplen vec)
 }
 
 
-double vector_avg(std::vector<double> vec)
+double double_vector_avg(std::vector<double> vec)
 {
 	double sum = 0.0; 
 
@@ -164,7 +164,7 @@ double get_path_length(std::vector<double> inst, IsolationForest &iff)
 	double *query = vector_to_dub_ptr(inst);
 	std::vector<double> plens = iff.pathLength(query);
 
-	return vector_avg(plens);
+	return double_vector_avg(plens);
 }
 
 
@@ -256,4 +256,20 @@ std::vector<int> get_anomalies_idx(dataframe data)
 	}
 
 	return indices;
+}
+
+
+std::vector<int> fill_up_remaining_feats(std::vector<int> omitted_feats, int query_num_feats)
+{
+	if (omitted_feats.size() != query_num_feats)
+	{
+		for (int i=0; i<query_num_feats; i++)
+		{
+			// (!omitted_feats.contains(i))
+			if (std::find(omitted_feats.begin(), omitted_feats.end(), i) == omitted_feats.end())
+				omitted_feats.push_back(i);
+		}
+	}
+
+	return omitted_feats;
 }
