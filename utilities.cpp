@@ -180,3 +180,80 @@ int get_num_cols_in_file(std::string filename)
 }
 
 
+double avg_depth_of_all_datapoints(std::vector<std::vector<double> > path_lengths)
+{
+	double sum_elements = 0.0;
+	int num_elements = 0;
+
+	for (int i=0; i<path_lengths.size(); i++)
+	{
+		for (int j=0; j<path_lengths.at(i).size(); j++)
+		{
+			sum_elements += path_lengths.at(i).at(j);
+			num_elements++;
+		}
+	}
+
+	return sum_elements / num_elements;
+}
+
+
+std::vector<int> subvector(std::vector<int> vec, int num_elements)
+{
+	return std::vector<int> (vec.begin(), vec.begin() + num_elements);
+}
+
+
+std::vector<std::vector<int> > read_bench_expl_file(std::string input_file)
+{
+	std::vector<std::vector<int> > expls;
+
+	std::ifstream infile(input_file.c_str());
+	std::string line, firstline;
+	int ctr=0;
+
+	getline(infile, firstline);
+
+	while(getline(infile, line))
+	{
+		std::vector<std::string> split_line = split(line, ',');
+		std::vector<int> ord_feats;
+
+		for (int k=0; k<split_line.size(); k++)
+		{
+			if (k == 0)
+				continue;
+
+			ord_feats.push_back(std::stoi(split_line.at(k)));
+		}
+
+		expls.push_back(ord_feats);
+	}
+
+	return expls;
+}
+
+
+std::vector<std::vector<double> > get_all_datapoints(dataframe data)
+{
+	std::vector<std::vector<double> > datapoints;
+
+	for (int i=0; i<data.size(); i++)
+		datapoints.push_back(data.at(i).second);
+
+	return datapoints;
+}
+
+
+std::vector<int> get_anomalies_idx(dataframe data)
+{
+	std::vector<int> indices;
+
+	for (int i=0; i<data.size(); i++)
+	{
+		if (data.at(i).first == "anomaly")
+			indices.push_back(i);
+	}
+
+	return indices;
+}

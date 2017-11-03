@@ -27,4 +27,12 @@ int get_lines_in_file(std::string filename);					/* number of lines in a given f
 double vector_avg(std::vector<double> vec);					/* get the average of the double vector */
 int get_num_cols_in_file(std::string filename);
 
+double avg_depth_of_all_datapoints(std::vector<std::vector<double> > path_lengths);
+std::vector<int> subvector(std::vector<int> vec, int num_elements);
+
+std::vector<std::vector<int> > read_bench_expl_file(std::string input_file);
+std::vector<std::vector<double> > get_all_datapoints(dataframe data);
+
+std::vector<int> get_anomalies_idx(dataframe data);
+
 #endif

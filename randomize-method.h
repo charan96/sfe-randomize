@@ -8,6 +8,7 @@ std::vector<int> build_avg_feat_lens(std::vector<double> query, dataframe data, 
 
 void write_refidx_file(std::vector<std::string> refidx);
 std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe nominal_df, doubleframe *df);
+
 void build_expl_file(std::vector<std::vector<int> > ranked_feats);
 
 #endif
