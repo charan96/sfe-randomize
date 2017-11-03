@@ -27,10 +27,12 @@ dataframe get_data_set(std::string input_file)
 }
 
 
-std::vector<double> switch_feature(int feat_num, dataframe data, std::vector<double> query)
+std::vector<double> switch_feature(std::vector<int> feat_num, dataframe data, std::vector<double> query)
 {
 	int rand_dataidx = randint(0, get_lines_in_file(INFILE) - 2);
-	query.at(feat_num) = data.at(rand_dataidx).second.at(feat_num);
+
+	for (int k: feat_num)
+		query.at(k) = data.at(rand_dataidx).second.at(k);
 	
 	return query;
 }
@@ -39,29 +41,22 @@ std::vector<double> switch_feature(int feat_num, dataframe data, std::vector<dou
 std::map<int, double> build_avg_feat_lens(std::vector<double> query, dataframe data, doubleframe *df, IsolationForest *iff)
 {
 	std::map<int, double> avg_switched_feature_query_lengths;
-	double base_pathlen = get_path_length(query, *iff);
+	double base_pathlen = vector_avg(iff->pathLength(vector_to_dub_ptr(query)));
 
 	// initialize to 0
 	for (int i=0; i<query.size(); i++)
 		avg_switched_feature_query_lengths[i] = double(0);
 
-	for (int i=0; i<NUM_REPS; i++)
-	{
-		std::map<int, double> switched_feature_query_lengths;
-		for (int k=0; k<query.size(); k++)
-		{
-			std::vector<double> updated_query = switch_feature(k, data, query);
-
-			double updated_pathlen = max_double(double(0), base_pathlen - get_path_length(updated_query, *iff));
-			switched_feature_query_lengths[k] = updated_pathlen;
-		}
-		
-		for (int j=0; j<query.size(); j++)
-			avg_switched_feature_query_lengths[j] += switched_feature_query_lengths[j];
-	}
-
 	for (int i=0; i<query.size(); i++)
+	{
+		for (int k=0; k<NUM_REPS; k++)
+		{
+			std::vector<double> updated_query = switch_feature(std::vector<int> {i}, data, query);
+			avg_switched_feature_query_lengths[i] += (base_pathlen - vector_avg(iff->pathLength(vector_to_dub_ptr(updated_query))));
+		}
+
 		avg_switched_feature_query_lengths[i] /= NUM_REPS;
+	}
 
 	return avg_switched_feature_query_lengths;
 }
@@ -75,9 +70,6 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 	IsolationForest iff = build_Isolation_forest(df);
 	std::vector<std::string> refidx;
 	int anomaly_ctr = 1;
-
-	// std::ofstream ref_file(REF_FILE.c_str());
-	// ref_file << "idx,anoIdx,ano_score" << std::endl;
 
 	for (int i=0; i<qdata.size(); i++)
 	{
@@ -97,6 +89,9 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 		feats.push_back(ord_feats);
 		
 		printf("%d\/%d, %f\n", i + 1, qdata.size(), iff.instanceScore(vector_to_dub_ptr(qpoint)));		// status printout
+
+		if (i == 30)
+			break;
 	}
 
 	write_refidx_file(refidx);

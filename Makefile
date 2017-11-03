@@ -2,7 +2,7 @@ CC=gcc
 CFLAGS=--std=c99 -D_GNU_SOURCE -Wall -Werror -g
 PP=g++
 PFLAGS=--std=c++11 -Wall -Werror -g  
-CPFLAGS=--std=c++11 -Wall -g
+CPFLAGS=--std=c++11 -Wall -Wno-sign-compare -g
 
 iforest/C/%.o: iforest/C/%.c iforest/C/%.h 
 	$(CC) $(CFLAGS) -c $< -o $@
@@ -24,9 +24,8 @@ forest.o: iforest/Forest.o iforest/IsolationForest.o iforest/Tree.o iforest/util
 %.o: %.cpp
 	$(PP) $(CPFLAGS) -c $< -o $@
 
-all: cincl.o forest.o print_funcs.o utilities.o randomize-method.o main.o
-	$(PP) $(CPFLAGS) -o exec_obj cincl.o forest.o print_funcs.o randomize-method.o utilities.o main.o
-	# $(CPP) $(CPFLAGS) print_funcs.cpp utilities.cpp randomize-method.cpp main.cpp -o exec_obj
+all: cincl.o build-mfp.o forest.o print_funcs.o utilities.o randomize-method.o main.o
+	$(PP) $(CPFLAGS) -o exec_obj cincl.o forest.o build-mfp.o print_funcs.o randomize-method.o utilities.o main.o	
 	./exec_obj
 
 clean:
@@ -42,5 +41,5 @@ fresh:
 run:
 	./exec_obj
 
-compile: cincl.o forest.o print_funcs.o utilities.o randomize-method.o main.o
-	$(PP) $(CPFLAGS) -o exec_obj cincl.o forest.o print_funcs.o randomize-method.o utilities.o main.o
+compile: cincl.o build-mfp.o forest.o print_funcs.o utilities.o randomize-method.o main.o
+	$(PP) $(CPFLAGS) -o exec_obj cincl.o forest.o build-mfp.o print_funcs.o randomize-method.o utilities.o main.o

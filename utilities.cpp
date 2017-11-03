@@ -8,7 +8,7 @@
 std::vector<double> str_to_double_vector(std::vector<std::string> vec)
 {
 	std::vector<double> dub_vector(vec.size() - COL_START);
-	
+
 	for (int i=COL_START;i<vec.size();i++)
 	{
 		dub_vector[i - COL_START] = std::stod(vec.at(i));
@@ -75,7 +75,7 @@ ftplen sort_vector_pair(ftplen vec)
 double vector_avg(std::vector<double> vec)
 {
 	double sum = 0.0; 
-	
+
 	for (int i=0; i<vec.size(); i++)
 		sum += vec.at(i);
 
@@ -118,31 +118,11 @@ std::vector<int> get_keys(std::map<int, double> mymap)
 /* FIXME: fix double frame to ignore 1st col */
 doubleframe* build_doubleframe(std::string input_name, int metacols)
 {
-	// d(int) *skip_cols = new int[1];
-	// skip_cols[0] = metacols;
-
 	ntstringframe* csv = read_csv((char *)input_name.c_str(), true, false, false);
-	// ntstringframe *metadata = split_frame(ntstring, csv, skip_cols, true);
 	doubleframe* dt = conv_frame(double, ntstring, csv);
 
-	/* for (int k=0; k<dt->ncol; k++)
-		std::cout << dt->data[0][k] << std::endl;
-	printf("\n");
-	*/
 	for (int inst=0; inst<dt->nrow; inst++)
-	{
-		/* std::vector<double> new_inst;
-		for (int i=0; i<dt->ncol; i++)
-		{
-			if (i == metacols)
-				continue;
-			new_inst.push_back(dt->data[inst][i]);
-		}
-
-		dt->data[inst] = vector_to_dub_ptr(new_inst);*/
-
 		dt->data[inst] = &dt->data[inst][metacols + 2];  //FIXME: works for only removing first col
-	}		
 
 	dt->ncol-=2;
 
@@ -181,7 +161,7 @@ double get_path_length(std::vector<double> inst, IsolationForest &iff)
 {
 	double *query = vector_to_dub_ptr(inst);
 	std::vector<double> plens = iff.pathLength(query);
-	
+
 	return vector_avg(plens);
 }
 
@@ -198,3 +178,80 @@ int get_num_cols_in_file(std::string filename)
 }
 
 
+double avg_depth_of_all_datapoints(std::vector<std::vector<double> > path_lengths)
+{
+	double sum_elements = 0.0;
+	int num_elements = 0;
+
+	for (int i=0; i<path_lengths.size(); i++)
+	{
+		for (int j=0; j<path_lengths.at(i).size(); j++)
+		{
+			sum_elements += path_lengths.at(i).at(j);
+			num_elements++;
+		}
+	}
+	
+	return sum_elements / num_elements;
+}
+
+
+std::vector<int> subvector(std::vector<int> vec, int num_elements)
+{
+	return std::vector<int> (vec.begin(), vec.begin() + num_elements);
+}
+
+
+std::vector<std::vector<int> > read_bench_expl_file(std::string input_file)
+{
+	std::vector<std::vector<int> > expls;
+
+	std::ifstream infile(input_file.c_str());
+	std::string line, firstline;
+	int ctr=0;
+
+	getline(infile, firstline);
+
+	while(getline(infile, line))
+	{
+		std::vector<std::string> split_line = split(line, ',');
+		std::vector<int> ord_feats;
+
+		for (int k=0; k<split_line.size(); k++)
+		{
+			if (k == 0)
+				continue;
+
+			ord_feats.push_back(std::stoi(split_line.at(k)));
+		}
+
+		expls.push_back(ord_feats);
+	}
+
+	return expls;
+}
+
+
+std::vector<std::vector<double> > get_all_datapoints(dataframe data)
+{
+	std::vector<std::vector<double> > datapoints;
+
+	for (int i=0; i<data.size(); i++)
+		datapoints.push_back(data.at(i).second);
+
+	return datapoints;
+}
+
+
+std::vector<int> get_anomalies_idx(dataframe data)
+{
+	std::vector<int> indices;
+
+	for (int i=0; i<data.size(); i++)
+	{
+		if (data.at(i).first == "anomaly")
+			indices.push_back(i);
+	}
+
+	return indices;
+}
