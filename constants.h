@@ -10,6 +10,8 @@
 #include <bits/stdc++.h>
 #include <random>
 #include <map>
+#include <math.h>
+
 
 typedef std::vector<std::pair<std::string, std::vector<double> > > dataframe;
 typedef std::vector<std::pair<int, double> > ftplen;

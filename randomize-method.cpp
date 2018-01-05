@@ -34,7 +34,7 @@ std::vector<double> switch_feature(std::vector<int> feat_num, dataframe data, st
 	int rand_dataidx = randint(0, get_lines_in_file(INFILE) - 2);
 
 	for (int k: feat_num)
-		query.at(k) = data.at(rand_dataidx).second.at(k);               //FIXME: DANGEROUS; change k - 1 to k
+		query.at(k) = data.at(rand_dataidx).second.at(k); 
 
 	return query;
 }
@@ -43,7 +43,7 @@ std::vector<double> switch_feature(std::vector<int> feat_num, dataframe data, st
 std::pair<int, std::vector<int> > build_avg_feat_lens(std::vector<double> query, dataframe data, doubleframe *df, IsolationForest *iff)
 {
 	double base_pathlen = double_vector_avg(iff->pathLength(vector_to_dub_ptr(query)));
-	std::vector<int> omitted_feats;
+	std::vector<int> omitted_feats;		// features already determined to be integral to the anomalousness
 
 	while (omitted_feats.size() < query.size())
 	{
@@ -120,7 +120,7 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 
 		std::cout << i + 1 << '/' << qdata.size() << ',' << iff.instanceScore(vector_to_dub_ptr(qpoint)) << std::endl;
 
-		if (i==40)
+		if (i==60)
 			break;
 	}
 

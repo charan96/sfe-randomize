@@ -26,7 +26,9 @@ forest.o: iforest/Forest.o iforest/IsolationForest.o iforest/Tree.o iforest/util
 
 all: cincl.o build-mfp.o forest.o print_funcs.o utilities.o randomize-method.o main.o
 	$(PP) $(CPFLAGS) -o exec_obj cincl.o build-mfp.o forest.o print_funcs.o randomize-method.o utilities.o main.o
+	date
 	./exec_obj
+	date
 
 clean:
 	rm -f *.o
