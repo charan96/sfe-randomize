@@ -178,21 +178,22 @@ int get_num_cols_in_file(std::string filename)
 }
 
 
-double avg_depth_of_all_datapoints(std::vector<std::vector<double> > path_lengths)
+double median_depth_of_all_datapoints(std::vector<std::vector<double> > path_lengths)
 {
-	double sum_elements = 0.0;
-	int num_elements = 0;
+	std::vector<double> depths;
 
-	for (int i=0; i<path_lengths.size(); i++)
+	for (std::vector<double> i: path_lengths)
 	{
-		for (int j=0; j<path_lengths.at(i).size(); j++)
-		{
-			sum_elements += path_lengths.at(i).at(j);
-			num_elements++;
-		}
+		for (double j: i)
+			depths.push_back(j);
 	}
-	
-	return sum_elements / num_elements;
+
+	std::sort(depths.begin(), depths.end());
+
+	if (depths.size() % 2 != 0)
+		return depths.at(floor(depths.size() / 2));
+
+	return (depths.at((depths.size() / 2) - 1) + depths.at(depths.size() / 2)) / 2.0;
 }
 
 

@@ -7,7 +7,7 @@
 
 int compute_mfp_from_expl_file(std::vector<double> query, std::vector<int> ordered_feats, dataframe data, doubleframe *df, IsolationForest *iff)
 {
-	double nominal_depth = avg_depth_of_all_datapoints(iff->pathLength(df));	
+	double nominal_depth = median_depth_of_all_datapoints(iff->pathLength(df));	
 	int ctr = 1;
 
 	for (int i=0; i<ordered_feats.size(); i++)
@@ -33,7 +33,7 @@ int compute_mfp_from_expl_file(std::vector<double> query, std::vector<int> order
 
 int compute_mfp_while_building_expls(std::vector<double> query, std::vector<int> ordered_feats, dataframe data, doubleframe *df, IsolationForest *iff)
 {
-	double nominal_depth = avg_depth_of_all_datapoints(iff->pathLength(df));
+	double nominal_depth = median_depth_of_all_datapoints(iff->pathLength(df));
 	int ctr = 1;
 
 	for (int i=0; i<ordered_feats.size(); i++)
