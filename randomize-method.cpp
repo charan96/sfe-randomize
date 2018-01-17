@@ -40,7 +40,7 @@ std::vector<double> switch_feature(std::vector<int> feat_num, dataframe data, st
 }
 
 
-std::pair<int, std::vector<int> > build_avg_feat_lens(std::vector<double> query, dataframe data, doubleframe *df, IsolationForest *iff)
+std::pair<int, std::vector<int> > build_avg_feat_lens(std::vector<double> query, dataframe data, doubleframe *df, IsolationForest *iff, std::string dpoint_type)
 {
 	double base_pathlen = double_vector_avg(iff->pathLength(vector_to_dub_ptr(query)));
 	std::vector<int> omitted_feats;		// features already determined to be integral to the anomalousness
@@ -77,8 +77,11 @@ std::pair<int, std::vector<int> > build_avg_feat_lens(std::vector<double> query,
 		std::vector<int> ord_feats = ordered_feats(myvec);
 		omitted_feats.push_back(ord_feats.front());
 
-		if (compute_mfp_while_building_expls(query, omitted_feats, data, df, iff))
-			break;
+		if (dpoint_type == "anomaly")
+		{
+			if (compute_mfp_while_building_expls(query, omitted_feats, data, df, iff))
+				break;
+		}
 		// printf("\n\n");
 	}
 
@@ -107,7 +110,7 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 	{
 		std::vector<double> qpoint = qdata.at(i).second;
 		
-		std::pair<int, std::vector<int> > mfp_ord_feats_pair = build_avg_feat_lens(qpoint, nominal_df, df, &iff);
+		std::pair<int, std::vector<int> > mfp_ord_feats_pair = build_avg_feat_lens(qpoint, nominal_df, df, &iff, qdata.at(i).first);
 	
 		// remove if statement for writing MFP for all datapoints to file
 		if (qdata.at(i).first == "anomaly")
@@ -118,7 +121,7 @@ std::vector<std::vector<int> > get_ranked_features(std::string qfile, dataframe 
 
 		feats.push_back(mfp_ord_feats_pair.second);
 
-		std::cout << i + 1 << '/' << qdata.size() << ',' << iff.instanceScore(vector_to_dub_ptr(qpoint)) << std::endl;
+		std::cout << i + 1 << '/' << qdata.size() << ',' << iff.instanceScore(vector_to_dub_ptr(qpoint)) << ',' << mfp_ord_feats_pair.first << std::endl;
 	}
 
 	std::cout << "Average MFP (Sequential): " << double_vector_avg(avg_mfp) << std::endl;

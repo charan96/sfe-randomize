@@ -36,7 +36,7 @@ bool compute_mfp_while_building_expls(std::vector<double> query, std::vector<int
 	double nominal_depth = median_depth_of_all_datapoints(iff->pathLength(df));
 	std::vector<double> updated_qdepths;
 
-	for (int j=0; j<MFP_REPS; j++)
+	for (int j=0; j<MFP_REPS * ordered_feats.size(); j++)
 	{
 		std::vector<double> updated_query = switch_feature(ordered_feats, data, query);
 		updated_qdepths.push_back(double_vector_avg(iff->pathLength(vector_to_dub_ptr(updated_query))));
